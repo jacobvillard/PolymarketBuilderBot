@@ -1,0 +1,20 @@
+# Environment files
+*.env
+*.env.*
+
+# Python venv
+.venv/
+venv/
+
+# PyCharm / Rider / IntelliJ files
+.idea/
+
+# Cache & temporary files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# OS files
+.DS_Store
+Thumbs.db
