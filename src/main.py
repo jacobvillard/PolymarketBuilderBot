@@ -1061,18 +1061,4 @@ if __name__ == "__main__":
 
     run_every_15_minutes()
 
-# -----------------------------
-if __name__ == "__main__":
-    cfg = load_env()
-    print("Env loaded OK:", cfg["host"], cfg["chain_id"])
 
-    polyclient = load_client()
-    polyclient.set_api_creds(polyclient.create_or_derive_api_creds())
-
-    if healthcheck():
-        print(f"{GREEN}All systems go!{RESET}")
-    else:
-        print(f"{RED}System check failed.{RESET}")
-        raise Exception("Healthcheck failed")
-
-    run_every_15_minutes()
