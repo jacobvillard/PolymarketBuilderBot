@@ -511,8 +511,6 @@ def run_every_15_minutes():
         print(GREEN + "\nSleeping for 1 minutes...\n" + RESET)
         time.sleep(60)
 
-        if datetime.utcnow().minute % 15 == 0:
-            redeem_all(cfg["private_key"])
 
 
 
