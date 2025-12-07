@@ -1035,77 +1035,11 @@ def run_every_15_minutes():
 
 
 
-from web3 import Web3
+
 import json
 import requests
 
-# Polygon RPC - you can replace with your own provider
-RPC_URL = "https://polygon-rpc.com"
 
-# CTF contract address (Polymarket)
-CTF_ADDRESS = Web3.to_checksum_address("0x5d22045daceab03b158031ecb7f2bb1438c36e07")
-
-# ABI for redeemPositions (minimal)
-CTF_ABI = [{
-    "name": "redeemPositions",
-    "type": "function",
-    "stateMutability": "nonpayable",
-    "inputs": [
-        {"name": "collateralToken", "type": "address"},
-        {"name": "parentCollectionId", "type": "bytes32"},
-        {"name": "conditionId", "type": "bytes32"},
-        {"name": "indexSets", "type": "uint256[]"}
-    ],
-    "outputs": []
-}]
-
-web3 = Web3(Web3.HTTPProvider(RPC_URL))
-ctf = web3.eth.contract(address=CTF_ADDRESS, abi=CTF_ABI)
-
-def redeem_position(priv_key, collateralToken, parentCollectionId, conditionId, indexSets):
-    acct = web3.eth.account.from_key(priv_key)
-    addr = acct.address
-
-    tx = ctf.functions.redeemPositions(
-        Web3.to_checksum_address(collateralToken),
-        parentCollectionId,
-        conditionId,
-        indexSets
-    ).build_transaction({
-        "from": addr,
-        "gas": 450000,
-        "gasPrice": web3.eth.gas_price,
-        "nonce": web3.eth.get_transaction_count(addr)
-    })
-
-    signed = web3.eth.account.sign_transaction(tx, private_key=priv_key)
-    tx_hash = web3.eth.send_raw_transaction(signed.rawTransaction)
-
-    print("Redeem tx sent:", tx_hash.hex())
-    return tx_hash.hex()
-
-def redeem_all(priv_key):
-    acct = web3.eth.account.from_key(priv_key)
-    addr = acct.address
-
-    url = f"https://clob.polymarket.com/positions/{addr}"
-    pos = requests.get(url).json()
-
-    print("\n=== Checking redeemable markets ===")
-
-    for p in pos:
-        if float(p["payout"]) == 0:
-            continue  # skip non-winning
-
-        print(f"Redeeming {p['market']['question']}")
-
-        redeem_position(
-            priv_key,
-            p["collateralToken"],
-            p["collectionId"],
-            p["conditionId"],
-            [int(p["indexSet"])]
-        )
 
 
 
